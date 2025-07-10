@@ -24,11 +24,10 @@ function FormPage() {
     setError("");
 
     try {
-      const apiUrl = process.env.NODE_ENV === 'production' 
-        ? `${import.meta.env.VITE_LIVE_API_URL}/api/analyze-skill`
-        : `${import.meta.env.VITE_DEV_API_URL}/api/analyze-skill`;
+      // Import API URL from config
+      const API_URL = (await import('../config/api.js')).default;
         
-      const response = await fetch(apiUrl, {
+      const response = await fetch(`${API_URL}/analyze-skill`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

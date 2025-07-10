@@ -1,4 +1,3 @@
-
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
@@ -12,19 +11,34 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 const MESSAGE = process.env.MESSAGE || 'SkillScope API';
 
+// Determine allowed origins based on environment
+const allowedOrigins = [
+  process.env.DEV_FRONTEND_URL || 'http://localhost:5173',
+  process.env.LIVE_FRONTEND_URL || 'https://muula-ai-test-task.vercel.app',
+  'https://muula-ai-test-task-git-main-rxavios-projects.vercel.app',
+  'https://muula-ai-test-task-9u4vtvqwr-rxavios-projects.vercel.app'
+];
 
-
+// Configure CORS
 app.use(function (req, res, next) {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader(
-    "Access-Control-Allow-Methods",
-    "GET, POST, PUT, PATCH, DELETE"
-  );
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-  res.setHeader("Access-Control-Allow-Credentials", true);
+  const origin = req.headers.origin;
+  if (allowedOrigins.includes(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+  } else {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+  }
+  
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  
+  // Handle preflight requests
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+  
   next();
 });
-
 
 // Middleware
 app.use(helmet());
@@ -51,6 +65,12 @@ app.get('/', (req, res) => {
 // Error handler
 app.use(errorHandler);
 
-app.listen(PORT, () => {
-  console.log(`✅ Server is running at http://localhost:${PORT}`);
-});
+// For local development
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(PORT, () => {
+    console.log(`✅ Server is running at http://localhost:${PORT}`);
+  });
+}
+
+// Export for serverless deployment
+module.exports = app;
