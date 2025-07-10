@@ -1,4 +1,4 @@
-# SkillScope - AI-Powered Skill Analysis
+# SkillScope - Smart Skill Profiler
 
 SkillScope is an AI-powered skill analysis tool that helps users discover their career strengths and potential opportunities based on their skills and experience.
 
