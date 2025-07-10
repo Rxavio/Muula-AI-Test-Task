@@ -142,7 +142,7 @@ Both the frontend and backend are deployed on Vercel:
 ## API Endpoints
 
 ### Health Check
-- `GET /api/health` - Check if the API is running
+- `GET /api/hello` - Check if the API is running
 
 ### Skill Analysis
 - `POST /api/analyze-skill` - Submit skill information for analysis
