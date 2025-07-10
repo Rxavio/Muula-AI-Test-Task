@@ -24,18 +24,16 @@ function FormPage() {
     setError("");
 
     try {
-      // Hard-code the backend URL directly for now
-      const API_URL = 'https://muula-ai-test-task-backend.vercel.app/api';
-      console.log('Using API URL:', API_URL);
+      // Import API URL from config file
+      const API_URL = (await import('../config/api.js')).default;
       
-      // Full request URL for debugging
-      const requestUrl = `${API_URL}/analyze-skill`;
-      console.log('Making request to:', requestUrl);
+      // Check if API URL is defined
+      if (!API_URL) {
+        throw new Error('API URL is not configured. Please check the application settings.');
+      }
       
-      // Show form data being sent
-      console.log('Sending data:', formData);
-      
-      const response = await fetch(requestUrl, {
+      // Make request to the analyze-skill endpoint
+      const response = await fetch(`${API_URL}/analyze-skill`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -44,17 +42,14 @@ function FormPage() {
       });
 
       const data = await response.json();
-      console.log('Response received:', data);
 
       if (!response.ok) {
-        console.error('Error response:', response.status, response.statusText);
         throw new Error(data.error || 'Failed to analyze skill profile');
       }
 
       // Navigate to results with the analysis data
       navigate("/results", { state: data });
     } catch (err) {
-      console.error('Fetch error:', err);
       setError(err.message || 'Something went wrong. Please try again.');
     } finally {
       setIsLoading(false);
