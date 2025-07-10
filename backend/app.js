@@ -14,9 +14,7 @@ const MESSAGE = process.env.MESSAGE || 'SkillScope API';
 // Determine allowed origins based on environment
 const allowedOrigins = [
   process.env.DEV_FRONTEND_URL || 'http://localhost:5173',
-  process.env.LIVE_FRONTEND_URL || 'https://muula-ai-test-task.vercel.app',
-  'https://muula-ai-test-task-git-main-rxavios-projects.vercel.app',
-  'https://muula-ai-test-task-9u4vtvqwr-rxavios-projects.vercel.app'
+  'https://muula-ai-test-task-u2ma.vercel.app'
 ];
 
 // Configure CORS
@@ -41,8 +39,16 @@ app.use(function (req, res, next) {
 });
 
 // Middleware
-app.use(helmet());
-app.use(cors());
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: "cross-origin" }
+}));
+// Using cors package with specific options
+app.use(cors({
+  origin: allowedOrigins,
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(logger('dev'));
